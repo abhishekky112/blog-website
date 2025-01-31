@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog : </title>
+
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/editor.css">
+    <link rel="stylesheet" href="css/blog.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <img src="img/logo.png" class="logo" alt="">
+        <ul class="links-container">
+            <li class="link-item"><a href="/" class="link">home</a></li>
+            <li class="link-item"><a href="/editor" class="link">editor</a></li>
+        </ul>
+    </nav>
+    
+    <div class="banner"></div>
+
+    <div class="blog">
+        <h1 class="title"></h1>
+        <p class="published"><span>published at - </span></p>
+        <div class="article"></div>
+    </div>
+
+    <div class="share-buttons">
+        <button id="share-btn" class="btn dark">Share</button>
+        <a id="whatsapp-share" class="btn dark" href="#" target="_blank">Share on WhatsApp</a>
+        <a id="email-share" class="btn dark" href="#">Share via Email</a>
+        <button id="print-btn" class="btn dark">Print</button>
+    </div>
+
+    <h1 class="sub-heading">Read more</h1>
+
+    <!-- blog section -->
+    <section class="blogs-section">
+        <!-- <div class="blog-card">
+            <img src="img/header.png" class="blog-image" alt="">
+            <h1 class="blog-title">Lorem ipsum dolor sit amet consectetur.</h1>
+            <p class="blog-overview">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt incidunt fugiat quos porro repellat harum. Adipisci tempora corporis rem cum.</p>
+            <a href="/" class="btn dark">read</a>
+        </div> -->
+    </section>
+
+    <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-firestore.js"></script>
+
+    <script src="js/firebase.js"></script>
+    <script src="js/home.js"></script>
+    <script src="js/blog.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const shareBtn = document.getElementById('share-btn');
+            const whatsappShare = document.getElementById('whatsapp-share');
+            const emailShare = document.getElementById('email-share');
+            const printBtn = document.getElementById('print-btn');
+            const title = document.querySelector('.title').innerText;
+            const url = window.location.href;
+
+            shareBtn.addEventListener('click', () => {
+                if (navigator.share) {
+                    navigator.share({
+                        title: title,
+                        text: 'Check out this blog!',
+                        url: url
+                    }).then(() => {
+                        console.log('Thanks for sharing!');
+                    }).catch(console.error);
+                } else {
+                    alert('Share not supported on this browser, use the links below to share');
+                }
+            });
+
+            whatsappShare.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + url)}`;
+            emailShare.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`;
+
+            printBtn.addEventListener('click', () => {
+                window.print();
+            });
+        });
+    </script>
+</body>
+</html> 
