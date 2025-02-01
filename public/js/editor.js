@@ -1,7 +1,4 @@
 const blogTitleField = document.querySelector('.title');
-const articleFeild = document.querySelector('.article');
-
-// banner
 const bannerImage = document.querySelector('#banner-upload');
 const banner = document.querySelector(".banner");
 let bannerPath;
@@ -13,9 +10,9 @@ bannerImage.addEventListener('change', () => {
     uploadImage(bannerImage, "banner");
 })
 
-uploadInput.addEventListener('change', () => {
-    uploadImage(uploadInput, "image");
-})
+// uploadInput.addEventListener('change', () => {
+//     uploadImage(uploadInput, "image");
+// })
 
 const uploadImage = (uploadFile, uploadType) => {
     const [file] = uploadFile.files;
@@ -41,15 +38,30 @@ const uploadImage = (uploadFile, uploadType) => {
 }
 
 const addImage = (imagepath, alt) => {
-    let curPos = articleFeild.selectionStart;
-    let textToInsert = `\r![${alt}](${imagepath})\r`;
-    articleFeild.value = articleFeild.value.slice(0, curPos) + textToInsert + articleFeild.value.slice(curPos);
+    const range = quill.getSelection();
+    quill.insertEmbed(range.index, 'image', imagepath);
 }
 
 let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+// Initialize Quill editor
+const quill = new Quill('#editor-container', {
+    theme: 'snow',
+    modules: {
+        toolbar: [
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            ['link', 'image'],
+            [{ 'align': [] }],
+            ['clean']
+        ]
+    }
+});
+
 publishBtn.addEventListener('click', () => {
-    if(articleFeild.value.length && blogTitleField.value.length){
+    const article = quill.root.innerHTML;
+    if(article.length && blogTitleField.value.length){
         // generating id
         let letters = 'abcdefghijklmnopqrstuvwxyz';
         let blogTitle = blogTitleField.value.split(" ").join("-");
@@ -65,7 +77,7 @@ publishBtn.addEventListener('click', () => {
         //access firstore with db variable;
         db.collection("blogs").doc(docName).set({
             title: blogTitleField.value,
-            article: articleFeild.value,
+            article: article,
             bannerImage: bannerPath,
             publishedAt: `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`
         })
